@@ -2,308 +2,222 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Iron & Steel – Flow Chart</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Iron & Steel Industry – Interactive Flow</title>
 <style>
-  /* Scope everything so it won't affect your LMS */
-  #flow-wrapper{
+  #flow-wrapper {
     font-family: "Segoe UI", Roboto, sans-serif;
-    background:#f7f9fc; padding:16px; box-sizing:border-box;
+    background: #f7f9fc;
+    padding: 16px;
+    box-sizing: border-box;
   }
-  #title { text-align:center; color:#0b5bd3; margin:6px 0 10px; font-weight:800; }
-  #subtitle{ text-align:center; color:#606770; margin:0 0 16px; }
+  h2 { text-align:center; color:#0b5bd3; margin:6px 0 10px; font-weight:800; }
+  p { text-align:center; color:#606770; margin:0 0 16px; }
 
-  /* Canvas with absolute SVG under the nodes */
-  .flow-canvas{
-    position:relative; background:#fff; border:1px solid #e5e7eb; border-radius:12px;
-    overflow:auto; padding:24px; min-height:520px;
+  .flow-canvas {
+    position: relative;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: auto;
+    padding: 24px;
+    min-height: 520px;
   }
-  svg.connectors{ position:absolute; inset:0; pointer-events:none; }
+  svg.connectors { position:absolute; inset:0; pointer-events:none; }
 
-  /* Columns */
-  .columns{ display:flex; gap:28px; align-items:flex-start; }
-  .col{ display:flex; flex-direction:column; gap:16px; min-width:260px; }
+  .columns { display:flex; align-items:flex-start; gap:40px; }
+  .col { display:flex; flex-direction:column; gap:18px; min-width:250px; }
 
-  /* Cards (nodes) */
-  .card{
-    position:relative; padding:10px 12px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06);
-    border-left:4px solid transparent; background:#fff; cursor:pointer; font-weight:600; color:#222;
-    transition:transform .2s ease, box-shadow .2s ease;
+  .card {
+    position:relative;
+    padding:10px 14px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+    border-left:4px solid transparent;
+    cursor:pointer;
+    font-weight:600;
+    color:#222;
+    transition:all .2s ease;
+    background:#fff;
   }
-  .card:hover{ transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.08); }
+  .card:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.08); }
 
-  /* Column themes (NotebookLM-ish) */
   .depth-0 .card{ background:linear-gradient(120deg,#dbeafe,#eff6ff); border-left-color:#2b75ff; }
   .depth-1 .card{ background:linear-gradient(120deg,#dcfce7,#e8ffe8); border-left-color:#30a14e; }
   .depth-2 .card{ background:linear-gradient(120deg,#fff4d6,#fff0bf); border-left-color:#e6b400; }
   .depth-3 .card{ background:linear-gradient(120deg,#ffe0e7,#ffd1da); border-left-color:#e63946; }
   .depth-4 .card{ background:linear-gradient(120deg,#ede4ff,#e6dbff); border-left-color:#8a3ffc; }
 
-  /* Children container (shown/hidden on click) */
-  .children{ display:flex; flex-direction:column; gap:12px; }
-  .collapsed{ display:none; }
+  .children { display:none; flex-direction:column; gap:12px; }
+  .children.open { display:flex; }
+  .hint { position:absolute; right:8px; top:8px; font-size:11px; color:#475569; opacity:.7; }
 
-  /* Small pill for expand hint */
-  .hint{ position:absolute; right:8px; top:8px; font-size:11px; color:#475569; opacity:.75; }
-
-  /* Responsive */
-  @media (max-width: 880px){
-    .columns{ flex-wrap:nowrap; }
-    .col{ min-width:280px; }
-  }
+  @media (max-width:880px){ .col{min-width:280px;} }
 </style>
 </head>
 <body>
 <div id="flow-wrapper">
-  <h2 id="title">Iron and Steel Industry in India — Flow Chart</h2>
-  <p id="subtitle">Left-to-right flow with expandable nodes. Click any card to toggle its children.</p>
+  <h2>Iron and Steel Industry in India — Flow Chart</h2>
+  <p>Left-to-right flow. Click a card to expand or collapse its children.</p>
 
   <div id="canvas" class="flow-canvas">
-    <svg class="connectors" preserveAspectRatio="none"></svg>
+    <svg class="connectors"></svg>
     <div id="cols" class="columns"></div>
   </div>
 </div>
 
 <script>
-/* ---------- Data (same content as your map) ---------- */
-const data = {
+const data = { /* same dataset as before */ 
   nodeData:{
     id:"root",
     topic:"Iron and Steel Industry in India",
     children:[
-      {
-        topic:"History and Evolution",
-        children:[
-          { topic:"Ancient Period (700 BC)",
-            children:[
-              { topic:"Produced wrought iron" },
-              { topic:"Traditional methods (Karya furnace)" },
-              { topic:"Medium carbon content" }
-            ]
-          },
-          { topic:"Medieval Period (400 AD)",
-            children:[
-              { topic:"Iron Pillar of Delhi example" },
-              { topic:"Crucible-worked wrought iron" }
-            ]
-          },
-          { topic:"British Rule / Industrialization",
-            children:[
-              { topic:"First modern blast furnace (Calcutta, 1830s)" },
-              { topic:"First successful production (1890s)" },
-              { topic:"Rapid growth late 19th century" }
-            ]
-          },
-          { topic:"Modern Integrated Steel",
-            children:[
-              { topic:"TISCO/Tata Steel incorporated (1907)" },
-              { topic:"Indian Iron and Steel Co. & Mysore Steel Works" },
-              { topic:"High costs, poor quality, import dependence" }
-            ]
-          },
-          { topic:"Post Independence (Self-Reliance)",
-            children:[
-              { topic:"Government active role" },
-              { topic:"Public sector enterprises with Soviet aid" },
-              { topic:"Plants: Bokaro, Bhilai, Rourkela, Durgapur" }
-            ]
-          },
-          { topic:"Liberalization (1990s)",
-            children:[
-              { topic:"Entry of private sector (Essar, JSW, Tata)" },
-              { topic:"Current: One of the largest global producers" }
-            ]
-          }
-        ]
-      },
-      {
-        topic:"Key Features and Growth",
-        children:[
-          { topic:"Large Scale Production",
-            children:[
-              { topic:"2nd largest crude steel producer" },
-              { topic:"Meets 95% of domestic steel needs" }
-            ]
-          },
-          { topic:"Employment",
-            children:[ { topic:"2 million direct & indirect jobs" } ]
-          },
-          { topic:"Sector Dominance",
-            children:[
-              { topic:"Public sector (SAIL, RINL)" },
-              { topic:"Growing private firms (Tata, JSW, Essar)" }
-            ]
-          },
-          { topic:"Raw Material Advantage",
-            children:[
-              { topic:"10% of world’s iron ore reserves" },
-              { topic:"5th largest coal reserves" }
-            ]
-          },
-          { topic:"Innovation Focus",
-            children:[
-              { topic:"Developing specialized steel grades" },
-              { topic:"Cheaper raw material availability (but regulation challenges)" }
-            ]
-          }
-        ]
-      },
-      {
-        topic:"Major Challenges",
-        children:[
-          { topic:"High Production Costs",
-            children:[ { topic:"Outdated technology" }, { topic:"High logistics expenses" } ]
-          },
-          { topic:"Import Dependence",
-            children:[ { topic:"30% of total steel needs imported" }, { topic:"Need for high-grade/special varieties" } ]
-          },
-          { topic:"Infrastructure and Logistics",
-            children:[ { topic:"Poor transport networks" }, { topic:"Bottlenecks, traffic jams, delays" } ]
-          },
-          { topic:"Technology and Efficiency",
-            children:[ { topic:"Uses suboptimal processes" }, { topic:"Lower energy efficiency" } ]
-          },
-          { topic:"Environmental and Safety Issues",
-            children:[ { topic:"High pollution (dust, gases, heat)" }, { topic:"Poor worker safety records" } ]
-          },
-          { topic:"Raw Material Shortages",
-            children:[ { topic:"Depletion of reserves" }, { topic:"Delays in mining permissions" } ]
-          },
-          { topic:"Weak Branding & Marketing",
-            children:[ { topic:"Forces higher-cost imports" } ]
-          }
-        ]
-      },
-      {
-        topic:"Major Companies (Examples)",
-        children:[
-          { topic:"Steel Authority of India (SAIL)" },
-          { topic:"Tata Steel" },
-          { topic:"JSW Steel" },
-          { topic:"Rashtriya Ispat Nigam Ltd (RINL)" },
-          { topic:"Jindal Steel & Power (JSPL)" }
-        ]
-      }
+      { topic:"History and Evolution", children:[
+        { topic:"Ancient Period (700 BC)", children:[
+          {topic:"Produced wrought iron"},
+          {topic:"Traditional methods (Karya furnace)"},
+          {topic:"Medium carbon content"}]},
+        { topic:"Medieval Period (400 AD)", children:[
+          {topic:"Iron Pillar of Delhi example"},
+          {topic:"Crucible-worked wrought iron"}]},
+        { topic:"British Rule / Industrialization", children:[
+          {topic:"First modern blast furnace (Calcutta, 1830s)"},
+          {topic:"First successful production (1890s)"},
+          {topic:"Rapid growth late 19th century"}]},
+        { topic:"Modern Integrated Steel", children:[
+          {topic:"TISCO/Tata Steel incorporated (1907)"},
+          {topic:"Indian Iron and Steel Co. & Mysore Steel Works"},
+          {topic:"High costs, poor quality, import dependence"}]},
+        { topic:"Post Independence (Self-Reliance)", children:[
+          {topic:"Government active role"},
+          {topic:"Public sector enterprises with Soviet aid"},
+          {topic:"Plants: Bokaro, Bhilai, Rourkela, Durgapur"}]},
+        { topic:"Liberalization (1990s)", children:[
+          {topic:"Entry of private sector (Essar, JSW, Tata)"},
+          {topic:"Current: One of the largest global producers"}]}
+      ]},
+      { topic:"Key Features and Growth", children:[
+        {topic:"Large Scale Production", children:[
+          {topic:"2nd largest crude steel producer"},
+          {topic:"Meets 95% of domestic steel needs"}]},
+        {topic:"Employment", children:[{topic:"2 million direct & indirect jobs"}]},
+        {topic:"Sector Dominance", children:[
+          {topic:"Public sector (SAIL, RINL)"},
+          {topic:"Growing private firms (Tata, JSW, Essar)"}]},
+        {topic:"Raw Material Advantage", children:[
+          {topic:"10% of world’s iron ore reserves"},
+          {topic:"5th largest coal reserves"}]},
+        {topic:"Innovation Focus", children:[
+          {topic:"Developing specialized steel grades"},
+          {topic:"Cheaper raw material availability (but regulation challenges)"}]}
+      ]},
+      { topic:"Major Challenges", children:[
+        {topic:"High Production Costs", children:[
+          {topic:"Outdated technology"},
+          {topic:"High logistics expenses"}]},
+        {topic:"Import Dependence", children:[
+          {topic:"30% of total steel needs imported"},
+          {topic:"Need for high-grade/special varieties"}]},
+        {topic:"Infrastructure and Logistics", children:[
+          {topic:"Poor transport networks"},
+          {topic:"Bottlenecks, traffic jams, delays"}]},
+        {topic:"Technology and Efficiency", children:[
+          {topic:"Uses suboptimal processes"},
+          {topic:"Lower energy efficiency"}]},
+        {topic:"Environmental and Safety Issues", children:[
+          {topic:"High pollution (dust, gases, heat)"},
+          {topic:"Poor worker safety records"}]},
+        {topic:"Raw Material Shortages", children:[
+          {topic:"Depletion of reserves"},
+          {topic:"Delays in mining permissions"}]},
+        {topic:"Weak Branding & Marketing", children:[
+          {topic:"Forces higher-cost imports"}]}
+      ]},
+      { topic:"Major Companies (Examples)", children:[
+        {topic:"Steel Authority of India (SAIL)"},
+        {topic:"Tata Steel"},
+        {topic:"JSW Steel"},
+        {topic:"Rashtriya Ispat Nigam Ltd (RINL)"},
+        {topic:"Jindal Steel & Power (JSPL)"}
+      ]}
     ]
   }
 };
 
-/* ---------- Simple flow renderer ---------- */
-const colsEl = document.getElementById('cols');
-const svg = document.querySelector('svg.connectors');
-const canvas = document.getElementById('canvas');
-let edges = []; // [fromEl, toEl]
+const colsEl=document.getElementById("cols");
+const svg=document.querySelector("svg.connectors");
+let edges=[];
 
-function ensureColumns(depth){
-  while(colsEl.children.length <= depth){
-    const col = document.createElement('div');
-    col.className = 'col depth-' + colsEl.children.length;
-    colsEl.appendChild(col);
+function ensureCol(depth){
+  while(colsEl.children.length<=depth){
+    const c=document.createElement("div");
+    c.className="col depth-"+colsEl.children.length;
+    colsEl.appendChild(c);
   }
 }
-function createCard(text){
-  const div = document.createElement('div');
-  div.className = 'card';
-  div.textContent = text;
-  return div;
+function makeCard(text,depth){
+  const d=document.createElement("div");
+  d.className="card depth-"+depth;
+  d.textContent=text;
+  return d;
 }
-function renderNode(node, depth=0){
-  ensureColumns(depth);
-  const col = colsEl.children[depth];
 
-  // wrapper for this node + its children
-  const wrapper = document.createElement('div');
-  const card = createCard(node.topic);
-  wrapper.appendChild(card);
-
-  let kidsWrap = null;
-
-  if(node.children && node.children.length){
-    kidsWrap = document.createElement('div');
-    kidsWrap.className = 'children'; // start expanded
-    // hint
-    const hint = document.createElement('div');
-    hint.className = 'hint';
-    hint.textContent = 'click';
-    card.appendChild(hint);
-
-    card.addEventListener('click', (e)=>{
-      kidsWrap.classList.toggle('collapsed');
-      queueDraw();
-      e.stopPropagation();
-    });
-
-    wrapper.appendChild(kidsWrap);
-    // render children to next column and collect edges
-    node.children.forEach(child=>{
-      const childWrap = renderNode(child, depth+1);
-      kidsWrap.appendChild(childWrap.placeholder); // visual stub in this column
-      edges.push([card, childWrap.card]); // connect actual card elements across columns
-    });
-  }
-
-  // place node in its column (actual visual card)
+function render(node,depth=0,parentCard=null){
+  ensureCol(depth);
+  const col=colsEl.children[depth];
+  const card=makeCard(node.topic,depth);
   col.appendChild(card);
 
-  // return pointers so parent can connect to this card, while keeping a stub to keep vertical rhythm
-  const placeholder = document.createElement('div');
-  placeholder.className = 'card';
-  placeholder.style.visibility = 'hidden'; // keeps spacing when children shown inside same column
-  placeholder.textContent = node.topic;
+  if(parentCard) edges.push([parentCard,card]);
 
-  return { card, placeholder };
-}
+  if(node.children && node.children.length){
+    const kidsWrap=document.createElement("div");
+    kidsWrap.className="children";
+    node.children.forEach(ch=>{
+      const childCard=render(ch,depth+1,card);
+      kidsWrap.appendChild(childCard);
+    });
+    col.appendChild(kidsWrap);
 
-function clearAll(){
-  colsEl.innerHTML = '';
-  edges = [];
-  svg.innerHTML = '';
+    // toggle
+    const hint=document.createElement("div");
+    hint.className="hint";
+    hint.textContent="click";
+    card.appendChild(hint);
+
+    card.addEventListener("click",e=>{
+      kidsWrap.classList.toggle("open");
+      drawLines();
+      e.stopPropagation();
+    });
+  }
+  return card;
 }
 
 function drawLines(){
-  // size SVG to canvas scroll area
-  const rect = canvas.getBoundingClientRect();
-  svg.setAttribute('width', canvas.scrollWidth);
-  svg.setAttribute('height', canvas.scrollHeight);
-  svg.setAttribute('viewBox', `0 0 ${canvas.scrollWidth} ${canvas.scrollHeight}`);
-  svg.innerHTML = '';
-
-  edges.forEach(([fromEl,toEl])=>{
-    const a = fromEl.getBoundingClientRect();
-    const b = toEl.getBoundingClientRect();
-    const c = canvas.getBoundingClientRect();
-
-    // points relative to canvas
-    const x1 = a.right - c.left;  const y1 = a.top + a.height/2 - c.top;
-    const x2 = b.left  - c.left;  const y2 = b.top + b.height/2 - c.top;
-
-    // cubic bezier control points
-    const dx = Math.max(40, (x2 - x1) * 0.4);
-    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('d', `M ${x1} ${y1} C ${x1+dx} ${y1}, ${x2-dx} ${y2}, ${x2} ${y2}`);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke','#9aa4b2');
-    path.setAttribute('stroke-width','2');
-    path.setAttribute('opacity','0.9');
-    svg.appendChild(path);
+  svg.innerHTML="";
+  const cRect=colsEl.getBoundingClientRect();
+  svg.setAttribute("width",colsEl.scrollWidth);
+  svg.setAttribute("height",colsEl.scrollHeight);
+  edges.forEach(([a,b])=>{
+    const ar=a.getBoundingClientRect(), br=b.getBoundingClientRect();
+    const x1=ar.right - cRect.left, y1=ar.top+ar.height/2 - cRect.top;
+    const x2=br.left - cRect.left, y2=br.top+br.height/2 - cRect.top;
+    const dx=Math.max(40,(x2-x1)*.4);
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("d",`M${x1} ${y1} C${x1+dx} ${y1}, ${x2-dx} ${y2}, ${x2} ${y2}`);
+    p.setAttribute("fill","none");
+    p.setAttribute("stroke","#9aa4b2");
+    p.setAttribute("stroke-width","2");
+    svg.appendChild(p);
   });
 }
 
-let drawQueued = null;
-function queueDraw(){
-  if(drawQueued) cancelAnimationFrame(drawQueued);
-  drawQueued = requestAnimationFrame(()=>{ drawQueued=null; drawLines(); });
-}
-
-/* ---------- Init ---------- */
-function init(){
-  clearAll();
-  renderNode(data.nodeData, 0);
-  // first draw after layout settles
-  queueDraw();
-}
-window.addEventListener('DOMContentLoaded', init);
-window.addEventListener('resize', queueDraw);
+window.addEventListener("DOMContentLoaded",()=>{
+  render(data.nodeData,0);
+  drawLines();
+});
+window.addEventListener("resize",drawLines);
 </script>
 </body>
 </html>
