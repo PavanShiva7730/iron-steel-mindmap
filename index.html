@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Iron and Steel Industry in India - Mind Map</title>
+<title>Iron and Steel Industry in India - Interactive Mind Map</title>
 <style>
   body {
     font-family: "Segoe UI", Roboto, sans-serif;
@@ -21,244 +21,277 @@
     color: #555;
     margin-bottom: 20px;
   }
-
-  /* Container */
   #map {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 20px;
-    background: #fff;
+    width: 100%;
+    height: 550px;
+    overflow: auto;
+    border-radius: 10px;
     border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    margin: auto;
-    width: 95%;
+    background: #fff;
+    padding: 20px;
     box-sizing: border-box;
   }
 
-  /* Each column */
-  .column {
-    flex: 1 1 300px;
-    min-width: 260px;
-    background: #fdfdfd;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-    padding: 12px 10px;
-    transition: transform 0.3s ease;
+  /* --- NotebookLM Style --- */
+  .box {
+    position: relative;
+    margin-left: 20px;
+    margin-top: 8px;
   }
-  .column:hover { transform: translateY(-3px); }
-
-  .root {
-    text-align: center;
-    font-size: 20px;
-    font-weight: 700;
-    color: #004aad;
-    margin-bottom: 20px;
-  }
-
   .topic {
-    border-radius: 10px;
-    padding: 8px 12px;
-    margin: 6px 0;
+    border-radius: 12px;
+    padding: 8px 14px;
+    display: inline-block;
     cursor: pointer;
     font-weight: 600;
     color: #222;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     transition: all 0.25s ease;
   }
-  .topic:hover { transform: scale(1.03); }
+  .topic:hover {
+    transform: scale(1.03);
+  }
+
+  /* Colors by depth */
+  .depth-0 .topic { background: linear-gradient(120deg,#c6dcf8,#d7e8ff); border-left: 4px solid #2b75ff; }
+  .depth-1:nth-child(1) .topic { background: linear-gradient(120deg,#d4f4dd,#baf3c4); border-left: 4px solid #30a14e; }
+  .depth-1:nth-child(2) .topic { background: linear-gradient(120deg,#fff2c6,#ffe59d); border-left: 4px solid #e6b400; }
+  .depth-1:nth-child(3) .topic { background: linear-gradient(120deg,#ffdce5,#ffb3c1); border-left: 4px solid #e63946; }
+  .depth-1:nth-child(4) .topic { background: linear-gradient(120deg,#e4d2ff,#d1b3ff); border-left: 4px solid #8a3ffc; }
 
   .children {
-    margin-left: 15px;
-    padding-left: 10px;
-    border-left: 2px dashed #ccc;
+    margin-left: 30px;
+    padding-left: 15px;
+    border-left: 1.5px dashed #ccc;
     display: none;
+    transition: all 0.3s ease-in-out;
   }
   .children.open {
     display: block;
-    animation: fadeIn 0.3s ease;
   }
 
-  /* Column colors */
-  .col-1 .topic { background: linear-gradient(120deg,#c9f3d3,#b0e8bb); border-left: 4px solid #30a14e; }
-  .col-2 .topic { background: linear-gradient(120deg,#d7e4ff,#c4d6ff); border-left: 4px solid #2b75ff; }
-  .col-3 .topic { background: linear-gradient(120deg,#ffe3c7,#ffd49c); border-left: 4px solid #f5a623; }
-  .col-4 .topic { background: linear-gradient(120deg,#f7d4e3,#ffc8d9); border-left: 4px solid #e63946; }
-
-  /* Animation */
+  /* Smooth expand animation */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
+    from { opacity: 0; transform: translateY(-3px); }
     to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    #map { flex-direction: column; }
   }
 </style>
 </head>
+
 <body>
   <h2>Iron and Steel Industry in India</h2>
   <p>Explore the evolution, key features, challenges, and major players in India’s iron and steel sector.<br>
-  Click the boxes below to expand or collapse details.</p>
+  Click the nodes below to expand or collapse sections.</p>
 
-  <div class="root">Iron and Steel Industry in India</div>
-
-  <div id="map">
-    <!-- Column 1 -->
-    <div class="column col-1">
-      <div class="topic">History and Evolution</div>
-      <div class="children open">
-        <div class="topic">Ancient Period (700 BC)</div>
-        <div class="children">
-          <div class="topic">Produced wrought iron</div>
-          <div class="topic">Traditional methods (Karya furnace)</div>
-          <div class="topic">Medium carbon content</div>
-        </div>
-
-        <div class="topic">Medieval Period (400 AD)</div>
-        <div class="children">
-          <div class="topic">Iron Pillar of Delhi example</div>
-          <div class="topic">Crucible-worked wrought iron</div>
-        </div>
-
-        <div class="topic">British Rule / Industrialization</div>
-        <div class="children">
-          <div class="topic">First modern blast furnace (Calcutta, 1830s)</div>
-          <div class="topic">First successful production (1890s)</div>
-          <div class="topic">Rapid growth late 19th century</div>
-        </div>
-
-        <div class="topic">Modern Integrated Steel</div>
-        <div class="children">
-          <div class="topic">TISCO/Tata Steel incorporated (1907)</div>
-          <div class="topic">Indian Iron and Steel Co. & Mysore Steel Works</div>
-          <div class="topic">High costs, poor quality, import dependence</div>
-        </div>
-
-        <div class="topic">Post Independence (Self-Reliance)</div>
-        <div class="children">
-          <div class="topic">Government active role</div>
-          <div class="topic">Public sector enterprises with Soviet aid</div>
-          <div class="topic">Plants: Bokaro, Bhilai, Rourkela, Durgapur</div>
-        </div>
-
-        <div class="topic">Liberalization (1990s)</div>
-        <div class="children">
-          <div class="topic">Entry of private sector (Essar, JSW, Tata)</div>
-          <div class="topic">Current: One of the largest global producers</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Column 2 -->
-    <div class="column col-2">
-      <div class="topic">Key Features and Growth</div>
-      <div class="children open">
-        <div class="topic">Large Scale Production</div>
-        <div class="children">
-          <div class="topic">2nd largest crude steel producer</div>
-          <div class="topic">Meets 95% of domestic steel needs</div>
-        </div>
-
-        <div class="topic">Employment</div>
-        <div class="children">
-          <div class="topic">2 million direct & indirect jobs</div>
-        </div>
-
-        <div class="topic">Sector Dominance</div>
-        <div class="children">
-          <div class="topic">Public sector (SAIL, RINL)</div>
-          <div class="topic">Growing private firms (Tata, JSW, Essar)</div>
-        </div>
-
-        <div class="topic">Raw Material Advantage</div>
-        <div class="children">
-          <div class="topic">10% of world’s iron ore reserves</div>
-          <div class="topic">5th largest coal reserves</div>
-        </div>
-
-        <div class="topic">Innovation Focus</div>
-        <div class="children">
-          <div class="topic">Developing specialized steel grades</div>
-          <div class="topic">Cheaper raw material availability (but regulation challenges)</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Column 3 -->
-    <div class="column col-3">
-      <div class="topic">Major Challenges</div>
-      <div class="children open">
-        <div class="topic">High Production Costs</div>
-        <div class="children">
-          <div class="topic">Outdated technology</div>
-          <div class="topic">High logistics expenses</div>
-        </div>
-
-        <div class="topic">Import Dependence</div>
-        <div class="children">
-          <div class="topic">30% of total steel needs imported</div>
-          <div class="topic">Need for high-grade/special varieties</div>
-        </div>
-
-        <div class="topic">Infrastructure and Logistics</div>
-        <div class="children">
-          <div class="topic">Poor transport networks</div>
-          <div class="topic">Bottlenecks, traffic jams, delays</div>
-        </div>
-
-        <div class="topic">Technology and Efficiency</div>
-        <div class="children">
-          <div class="topic">Uses suboptimal processes</div>
-          <div class="topic">Lower energy efficiency</div>
-        </div>
-
-        <div class="topic">Environmental and Safety Issues</div>
-        <div class="children">
-          <div class="topic">High pollution (dust, gases, heat)</div>
-          <div class="topic">Poor worker safety records</div>
-        </div>
-
-        <div class="topic">Raw Material Shortages</div>
-        <div class="children">
-          <div class="topic">Depletion of reserves</div>
-          <div class="topic">Delays in mining permissions</div>
-        </div>
-
-        <div class="topic">Weak Branding & Marketing</div>
-        <div class="children">
-          <div class="topic">Forces higher-cost imports</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Column 4 -->
-    <div class="column col-4">
-      <div class="topic">Major Companies (Examples)</div>
-      <div class="children open">
-        <div class="topic">Steel Authority of India (SAIL)</div>
-        <div class="topic">Tata Steel</div>
-        <div class="topic">JSW Steel</div>
-        <div class="topic">Rashtriya Ispat Nigam Ltd (RINL)</div>
-        <div class="topic">Jindal Steel & Power (JSPL)</div>
-      </div>
-    </div>
-  </div>
+  <div id="map"></div>
 
   <script>
-    // Enable expand/collapse
-    document.querySelectorAll('.topic').forEach(topic => {
-      topic.addEventListener('click', e => {
-        const next = topic.nextElementSibling;
-        if (next && next.classList.contains('children')) {
-          next.classList.toggle('open');
+  // ---- Offline lightweight tree renderer ----
+  class PrettyMind {
+    constructor(el, data) {
+      this.container = document.querySelector(el);
+      this.data = data.nodeData;
+    }
+    createNode(node, depth = 0) {
+      const box = document.createElement("div");
+      box.className = `box depth-${depth}`;
+      const topic = document.createElement("div");
+      topic.className = "topic";
+      topic.textContent = node.topic;
+      box.appendChild(topic);
+
+      if (node.children && node.children.length > 0) {
+        const children = document.createElement("div");
+        children.className = "children";
+        node.children.forEach(child =>
+          children.appendChild(this.createNode(child, depth + 1))
+        );
+        topic.addEventListener("click", () => {
+          children.classList.toggle("open");
+          children.classList.add("fade-in");
+        });
+        box.appendChild(children);
+      }
+      return box;
+    }
+    init() {
+      this.container.innerHTML = "";
+      const tree = this.createNode(this.data, 0);
+      this.container.appendChild(tree);
+    }
+  }
+
+  // ---- Data ----
+  const data = {
+    nodeData: {
+      id: "root",
+      topic: "Iron and Steel Industry in India",
+      children: [
+        {
+          topic: "History and Evolution",
+          children: [
+            {
+              topic: "Ancient Period (700 BC)",
+              children: [
+                { topic: "Produced wrought iron" },
+                { topic: "Traditional methods (Karya furnace)" },
+                { topic: "Medium carbon content" }
+              ]
+            },
+            {
+              topic: "Medieval Period (400 AD)",
+              children: [
+                { topic: "Iron Pillar of Delhi example" },
+                { topic: "Crucible-worked wrought iron" }
+              ]
+            },
+            {
+              topic: "British Rule / Industrialization",
+              children: [
+                { topic: "First modern blast furnace (Calcutta, 1830s)" },
+                { topic: "First successful production (1890s)" },
+                { topic: "Rapid growth late 19th century" }
+              ]
+            },
+            {
+              topic: "Modern Integrated Steel",
+              children: [
+                { topic: "TISCO/Tata Steel incorporated (1907)" },
+                { topic: "Indian Iron and Steel Co. & Mysore Steel Works" },
+                { topic: "High costs, poor quality, import dependence" }
+              ]
+            },
+            {
+              topic: "Post Independence (Self-Reliance)",
+              children: [
+                { topic: "Government active role" },
+                { topic: "Public sector enterprises with Soviet aid" },
+                { topic: "Plants: Bokaro, Bhilai, Rourkela, Durgapur" }
+              ]
+            },
+            {
+              topic: "Liberalization (1990s)",
+              children: [
+                { topic: "Entry of private sector (Essar, JSW, Tata)" },
+                { topic: "Current: One of the largest global producers" }
+              ]
+            }
+          ]
+        },
+        {
+          topic: "Key Features and Growth",
+          children: [
+            {
+              topic: "Large Scale Production",
+              children: [
+                { topic: "2nd largest crude steel producer" },
+                { topic: "Meets 95% of domestic steel needs" }
+              ]
+            },
+            {
+              topic: "Employment",
+              children: [
+                { topic: "2 million direct & indirect jobs" }
+              ]
+            },
+            {
+              topic: "Sector Dominance",
+              children: [
+                { topic: "Public sector (SAIL, RINL)" },
+                { topic: "Growing private firms (Tata, JSW, Essar)" }
+              ]
+            },
+            {
+              topic: "Raw Material Advantage",
+              children: [
+                { topic: "10% of world’s iron ore reserves" },
+                { topic: "5th largest coal reserves" }
+              ]
+            },
+            {
+              topic: "Innovation Focus",
+              children: [
+                { topic: "Developing specialized steel grades" },
+                { topic: "Cheaper raw material availability (but regulation challenges)" }
+              ]
+            }
+          ]
+        },
+        {
+          topic: "Major Challenges",
+          children: [
+            {
+              topic: "High Production Costs",
+              children: [
+                { topic: "Outdated technology" },
+                { topic: "High logistics expenses" }
+              ]
+            },
+            {
+              topic: "Import Dependence",
+              children: [
+                { topic: "30% of total steel needs imported" },
+                { topic: "Need for high-grade/special varieties" }
+              ]
+            },
+            {
+              topic: "Infrastructure and Logistics",
+              children: [
+                { topic: "Poor transport networks" },
+                { topic: "Bottlenecks, traffic jams, delays" }
+              ]
+            },
+            {
+              topic: "Technology and Efficiency",
+              children: [
+                { topic: "Uses suboptimal processes" },
+                { topic: "Lower energy efficiency" }
+              ]
+            },
+            {
+              topic: "Environmental and Safety Issues",
+              children: [
+                { topic: "High pollution (dust, gases, heat)" },
+                { topic: "Poor worker safety records" }
+              ]
+            },
+            {
+              topic: "Raw Material Shortages",
+              children: [
+                { topic: "Depletion of reserves" },
+                { topic: "Delays in mining permissions" }
+              ]
+            },
+            {
+              topic: "Weak Branding & Marketing",
+              children: [
+                { topic: "Forces higher-cost imports" }
+              ]
+            }
+          ]
+        },
+        {
+          topic: "Major Companies (Examples)",
+          children: [
+            { topic: "Steel Authority of India (SAIL)" },
+            { topic: "Tata Steel" },
+            { topic: "JSW Steel" },
+            { topic: "Rashtriya Ispat Nigam Ltd (RINL)" },
+            { topic: "Jindal Steel & Power (JSPL)" }
+          ]
         }
-        e.stopPropagation();
-      });
-    });
+      ]
+    }
+  };
+
+  // ---- Initialize ----
+  window.addEventListener("DOMContentLoaded", () => {
+    const mind = new PrettyMind("#map", data);
+    mind.init();
+  });
   </script>
 </body>
 </html>
